@@ -40,6 +40,9 @@ class RecipeCell: UITableViewCell {
     foodImageView.image = recipe.photo
     difficultyValue = recipe.difficulty
     difficultyLabel.text = difficultyString
+    
+    applyAccessibility(recipe)
+    
   }
   
   var difficultyString: String {
@@ -69,4 +72,42 @@ class RecipeCell: UITableViewCell {
   override func setSelected(_ selected: Bool, animated: Bool) {
     super.setSelected(selected, animated: animated)
   }
+}
+
+// MARK: Accessibility
+extension RecipeCell {
+    func applyAccessibility(_ recipe: Recipe) {
+        
+        //NOTE: setting voiceover description for features
+        
+        foodImageView.accessibilityTraits = UIAccessibilityTraitImage //1
+        
+        //accessibilityLabel used to describe element in voiceover
+        foodImageView.accessibilityLabel = recipe.photoDescription //2
+        
+        //NOTE: how to force a feature to be flagged for accessibility
+        
+        //isAccessibilityElement flags label for accessibility features
+        difficultyLabel.isAccessibilityElement = true //1
+        
+        //accessibilityTraits set to none because no specific action is needed for this label
+        difficultyLabel.accessibilityTraits = UIAccessibilityTraitNone //2
+        difficultyLabel.accessibilityLabel = "Difficulty Level" //3
+        
+        //accessibilityValue sets the number which will be read aloud after "Difficulty Level"
+        switch recipe.difficulty { //4
+        case .unknown:
+            difficultyLabel.accessibilityValue = "Unknown"
+        case .rating(let value):
+            difficultyLabel.accessibilityValue = "\(value)"
+        }
+        
+        //NOTE: dynamic text resizing
+        
+        //setting preferredFont means size is now dependent on body of document
+        difficultyLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        //below means font will update automatically when user adjusts size
+        difficultyLabel.adjustsFontForContentSizeCategory = true
+        
+}
 }

@@ -43,8 +43,15 @@ class InstructionCell: UITableViewCell {
     
     let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: text)
     
+    checkmarkButton.isAccessibilityElement = false //1
+    
     if strikeThrough {
-      attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: 2, range: NSMakeRange(0, attributeString.length))
+        
+        //NOTE: without label, strikethru description for voiceover is "Empty"- not clear enough to user, so change to "Completed" below
+        descriptionLabel.accessibilityLabel = "Completed: \(text)" //2
+        attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: 2, range: NSMakeRange(0, attributeString.length))
+    } else {
+        descriptionLabel.accessibilityLabel = "Uncompleted: \(text)" //3
     }
     
     checkmarkButton.isSelected = strikeThrough
